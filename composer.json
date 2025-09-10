@@ -16,9 +16,13 @@
     ],
     "require": {
         "composer/installers": "^2.0",
+        "drupal/admin_toolbar": "^3.6",
         "drupal/core-composer-scaffold": "^11.0",
         "drupal/core-project-message": "^11.0",
         "drupal/core-recommended": "^11.0",
+        "drupal/mailsystem": "^4.5",
+        "drupal/module_filter": "^5.0",
+        "drupal/symfony_mailer_lite": "^2.0",
         "drush/drush": "^13.1"
     },
     "conflict": {

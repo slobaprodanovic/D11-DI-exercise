@@ -12,3 +12,11 @@ services:
     class: Drupal\dependency_injection_exercise\Breadcrumb\PhotosBreadcrumbBuilder
     tags:
       - { name: breadcrumb_builder, priority: 100 }
+  dependency_injection_exercise.language_manager_decorator:
+    class: Drupal\dependency_injection_exercise\LanguageManagerDecorator
+    decorates: language_manager
+    decoration_priority: 10
+    arguments:
+      - '@dependency_injection_exercise.language_manager_decorator.inner'
+      - '@logger.channel.dependency_injection_exercise'
+      - '@current_route_match'

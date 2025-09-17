@@ -2,9 +2,10 @@
 
 namespace Drupal\dependency_injection_exercise\Plugin\Block;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Block\BlockBase;
-use GuzzleHttp\Exception\GuzzleException;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\dependency_injection_exercise\Service\PhotosService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a 'RestOutputBlock' block.
@@ -14,48 +15,36 @@ use GuzzleHttp\Exception\GuzzleException;
  *  admin_label = @Translation("Rest output block"),
  * )
  */
-class RestOutputBlock extends BlockBase {
+class RestOutputBlock extends BlockBase implements ContainerFactoryPluginInterface {
+  /**
+   * The photos service.
+   *
+   * @var \Drupal\dependency_injection_exercise\Service\PhotosService
+   */
+  protected PhotosService $photosService;
+
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, PhotosService $photosService) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->photosService = $photosService;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): RestOutputBlock|ContainerFactoryPluginInterface|static {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('dependency_injection_exercise.photos_service')
+    );
+  }
 
   /**
    * {@inheritdoc}
    */
   public function build(): array {
-    // Setup build caching.
-    $build = [
-      '#cache' => [
-        'max-age' => 60,
-        'contexts' => [
-          'url',
-        ],
-      ],
-    ];
-
-    // Try to obtain the photo data via the external API.
-    try {
-      $response = \Drupal::httpClient()->request('GET', sprintf('https://jsonplaceholder.typicode.com/albums/%s/photos', random_int(1, 20)));
-      $raw_data = $response->getBody()->getContents();
-      $data = Json::decode($raw_data);
-    }
-    catch (GuzzleException $e) {
-      $build['error'] = [
-        '#type' => 'html_tag',
-        '#tag' => 'p',
-        '#value' => $this->t('No photos available.'),
-      ];
-      return $build;
-    }
-
-    // Build a listing of photos from the photo data.
-    $build['photos'] = array_map(static function ($item) {
-      return [
-        '#theme' => 'image',
-        '#uri' => $item['thumbnailUrl'],
-        '#alt' => $item['title'],
-        '#title' => $item['title'],
-      ];
-    }, $data);
-
-    return $build;
+    return $this->photosService->getPhotos();
   }
 
 }

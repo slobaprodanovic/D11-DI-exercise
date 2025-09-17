@@ -1,0 +1,10 @@
+services:
+  Psr\Log\LoggerInterface $logger:
+    alias: 'logger.channel.dependency_injection_exercise'
+  logger.channel.dependency_injection_exercise:
+    class: Psr\Log\LoggerInterface
+    factory: [ '@logger.factory', 'get' ]
+    arguments: [ 'dependency_injection_exercise' ]
+  dependency_injection_exercise.photos_service:
+    class: Drupal\dependency_injection_exercise\Service\PhotosService
+    autowire: true

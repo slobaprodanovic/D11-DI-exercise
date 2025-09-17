@@ -2,14 +2,36 @@
 
 namespace Drupal\dependency_injection_exercise\Controller;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
-use GuzzleHttp\Exception\GuzzleException;
+use Drupal\dependency_injection_exercise\Service\PhotosService;
 
 /**
  * Provides the rest output.
  */
 class RestOutputController extends ControllerBase {
+
+  // Default album ID if none is provided.
+  CONST DEFAULT_ALBUM_ID = 5;
+
+  /**
+   * The photos service.
+   *
+   * @var \Drupal\dependency_injection_exercise\Service\PhotosService
+   */
+  protected PhotosService $photosService;
+
+  public function __construct(PhotosService $photosService) {
+    $this->photosService = $photosService;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create($container): RestOutputController {
+    return new self(
+      $container->get('dependency_injection_exercise.photos_service')
+    );
+  }
 
   /**
    * Displays the photos.
@@ -18,42 +40,7 @@ class RestOutputController extends ControllerBase {
    *   A renderable array representing the photos.
    */
   public function showPhotos(): array {
-    // Setup build caching.
-    $build = [
-      '#cache' => [
-        'max-age' => 60,
-        'contexts' => [
-          'url',
-        ],
-      ],
-    ];
-
-    // Try to obtain the photo data via the external API.
-    try {
-      $response = \Drupal::httpClient()->request('GET', 'https://jsonplaceholder.typicode.com/albums/5/photos');
-      $raw_data = $response->getBody()->getContents();
-      $data = Json::decode($raw_data);
-    }
-    catch (GuzzleException $e) {
-      $build['error'] = [
-        '#type' => 'html_tag',
-        '#tag' => 'p',
-        '#value' => $this->t('No photos available.'),
-      ];
-      return $build;
-    }
-
-    // Build a listing of photos from the photo data.
-    $build['photos'] = array_map(static function ($item) {
-      return [
-        '#theme' => 'image',
-        '#uri' => $item['thumbnailUrl'],
-        '#alt' => $item['title'],
-        '#title' => $item['title'],
-      ];
-    }, $data);
-
-    return $build;
+    return $this->photosService->getPhotos(self::DEFAULT_ALBUM_ID);
   }
 
 }

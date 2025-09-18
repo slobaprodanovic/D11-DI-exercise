@@ -23,6 +23,9 @@ class RestOutputBlock extends BlockBase implements ContainerFactoryPluginInterfa
    */
   protected PhotosService $photosService;
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, PhotosService $photosService) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->photosService = $photosService;

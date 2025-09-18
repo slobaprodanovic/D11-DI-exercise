@@ -10,7 +10,11 @@ use Drupal\dependency_injection_exercise\Service\PhotosService;
  */
 class RestOutputController extends ControllerBase {
 
-  // Default album ID if none is provided.
+  /**
+   * The default album ID.
+   *
+   * @var int
+   */
   CONST DEFAULT_ALBUM_ID = 5;
 
   /**
@@ -20,6 +24,12 @@ class RestOutputController extends ControllerBase {
    */
   protected PhotosService $photosService;
 
+  /**
+   * Constructs a RestOutputController object.
+   *
+   * @param \Drupal\dependency_injection_exercise\Service\PhotosService $photosService
+   *   The photos service.
+   */
   public function __construct(PhotosService $photosService) {
     $this->photosService = $photosService;
   }

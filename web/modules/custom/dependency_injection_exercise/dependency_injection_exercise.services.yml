@@ -20,3 +20,16 @@ services:
       - '@dependency_injection_exercise.language_manager_decorator.inner'
       - '@logger.channel.dependency_injection_exercise'
       - '@current_route_match'
+  dependency_injection_exercise.mail_manager_decorator:
+    class: Drupal\dependency_injection_exercise\RedirectMailManagerDecorator
+    decorates: plugin.manager.mail
+    decoration_priority: 10
+    arguments:
+      - '@dependency_injection_exercise.mail_manager_decorator.inner'
+      - '@container.namespaces'
+      - '@cache.discovery'
+      - '@module_handler'
+      - '@string_translation'
+      - '@logger.factory'
+      - '@config.factory'
+      - '@renderer'

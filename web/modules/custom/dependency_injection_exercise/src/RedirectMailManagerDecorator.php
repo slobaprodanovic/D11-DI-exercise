@@ -7,6 +7,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Mail\MailManager;
+use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 
@@ -28,15 +29,15 @@ class RedirectMailManagerDecorator extends MailManager {
   /**
    * The decorated mail manager service.
    *
-   * @var \Drupal\Core\Mail\MailManager
+   * @var \Drupal\Core\Mail\MailManagerInterface
    */
-  protected MailManager $inner;
+  protected MailManagerInterface $inner;
 
   /**
    * Constructs the decorator.
    */
   public function __construct(
-    MailManager $inner,
+    MailManagerInterface $inner,
     \Traversable $namespaces,
     CacheBackendInterface $cache,
     ModuleHandlerInterface $module_handler,
@@ -52,11 +53,21 @@ class RedirectMailManagerDecorator extends MailManager {
   }
 
   /**
+   * Sets the email address to which all emails will be redirected.
+   *
+   * @param string $email
+   *   The email address.
+   */
+  public function setRedirectTo(string $email): void {
+    $this->redirectTo = $email;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function mail($module, $key, $to, $langcode, $params = [], $reply = NULL, $send = TRUE) {
     $to = $this->redirectTo;
-    return parent::mail($module, $key, $to, $langcode, $params, $reply, $send);
+    return $this->inner->mail($module, $key, $to, $langcode, $params, $reply, $send);
   }
 
 }

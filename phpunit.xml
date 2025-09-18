@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="web/core/tests/bootstrap.php"
+         colors="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutChangesToGlobalState="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         cacheResult="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         cacheDirectory=".phpunit.cache">
+
+  <php>
+    <ini name="error_reporting" value="32767"/>
+    <ini name="memory_limit" value="-1"/>
+    <env name="SIMPLETEST_BASE_URL" value="http://web"/>
+    <env name="SIMPLETEST_DB" value="mysql://user:user@db/default"/>
+    <!-- Sve linije vezane za WebDriver ili MINK su uklonjene -->
+  </php>
+
+  <testsuites>
+    <testsuite name="unit">
+      <!-- Unit testovi iz modula, profila i tema -->
+      <directory>modules/**/tests/src/Unit</directory>
+      <directory>profiles/**/tests/src/Unit</directory>
+      <directory>themes/**/tests/src/Unit</directory>
+      <directory>../modules/*/**/tests/src/Unit</directory>
+      <directory>../profiles/*/**/tests/src/Unit</directory>
+      <directory>../themes/*/**/tests/src/Unit</directory>
+    </testsuite>
+  </testsuites>
+
+  <source ignoreSuppressionOfDeprecations="true">
+    <include>
+      <directory>./modules</directory>
+      <directory>../modules</directory>
+    </include>
+    <exclude>
+      <directory>./modules/*/src/Tests</directory>
+      <directory>./modules/*/tests</directory>
+      <directory>../modules/*/src/Tests</directory>
+      <directory>../modules/*/tests</directory>
+    </exclude>
+  </source>
+</phpunit>

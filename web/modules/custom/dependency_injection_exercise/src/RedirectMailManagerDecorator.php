@@ -54,6 +54,7 @@ class RedirectMailManagerDecorator extends MailManager {
 
   /**
    * Sets the email address to which all emails will be redirected.
+   * Needed for Unit Tests.
    *
    * @param string $email
    *   The email address.

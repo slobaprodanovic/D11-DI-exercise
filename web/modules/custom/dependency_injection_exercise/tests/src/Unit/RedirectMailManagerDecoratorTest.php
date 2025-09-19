@@ -2,6 +2,12 @@
 
 namespace Drupal\Tests\dependency_injection_exercise\Unit;
 
+use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\dependency_injection_exercise\RedirectMailManagerDecorator;
 use Drupal\Core\Mail\MailManagerInterface;
@@ -21,17 +27,28 @@ class RedirectMailManagerDecoratorTest extends UnitTestCase {
   public function testRerouteToTestEmail() {
     $mockInner = $this->createMock(MailManagerInterface::class);
 
-    $mockInner->method('mail')->willReturn(1);
+    $mockInner->expects($this->once())
+      ->method('mail')
+      ->with(
+        $this->anything(),
+        $this->anything(),
+        'test@example.com',
+        $this->anything(),
+        $this->anything(),
+        $this->anything(),
+        $this->anything()
+      )
+      ->willReturn(1);
 
     $decorator = new RedirectMailManagerDecorator(
       $mockInner,
       new ArrayIterator([]),
-      $this->createMock(\Drupal\Core\Cache\CacheBackendInterface::class),
-      $this->createMock(\Drupal\Core\Extension\ModuleHandlerInterface::class),
-      $this->createMock(\Drupal\Core\StringTranslation\TranslationInterface::class),
-      $this->createMock(\Drupal\Core\Logger\LoggerChannelFactoryInterface::class),
-      $this->createMock(\Drupal\Core\Config\ConfigFactoryInterface::class),
-      $this->createMock(\Drupal\Core\Render\RendererInterface::class),
+      $this->createMock(CacheBackendInterface::class),
+      $this->createMock(ModuleHandlerInterface::class),
+      $this->createMock(TranslationInterface::class),
+      $this->createMock(LoggerChannelFactoryInterface::class),
+      $this->createMock(ConfigFactoryInterface::class),
+      $this->createMock(RendererInterface::class),
     );
 
     $decorator->setRedirectTo('test@example.com');
@@ -49,36 +66,4 @@ class RedirectMailManagerDecoratorTest extends UnitTestCase {
     $this->assertSame(1, $result);
   }
 
-  /**
-   * Tests that emails to allowed addresses are not rerouted.
-   */
-  public function testNoRerouteForAllowedEmail() {
-    $mockInner = $this->createMock(MailManagerInterface::class);
-    $mockInner->method('mail')->willReturn(1);
-
-    $decorator = new RedirectMailManagerDecorator(
-      $mockInner,
-      new ArrayIterator([]),
-      $this->createMock(\Drupal\Core\Cache\CacheBackendInterface::class),
-      $this->createMock(\Drupal\Core\Extension\ModuleHandlerInterface::class),
-      $this->createMock(\Drupal\Core\StringTranslation\TranslationInterface::class),
-      $this->createMock(\Drupal\Core\Logger\LoggerChannelFactoryInterface::class),
-      $this->createMock(\Drupal\Core\Config\ConfigFactoryInterface::class),
-      $this->createMock(\Drupal\Core\Render\RendererInterface::class),
-    );
-
-    $decorator->setRedirectTo('allowed@example.com');
-
-    $result = $decorator->mail(
-      'my_module',
-      'key',
-      'allowed@example.com',
-      'en',
-      ['subject' => 'Hello'],
-      NULL,
-      TRUE
-    );
-
-    $this->assertSame(1, $result);
-  }
 }

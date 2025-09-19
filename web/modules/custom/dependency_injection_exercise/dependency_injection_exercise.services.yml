@@ -20,10 +20,12 @@ services:
       - '@dependency_injection_exercise.language_manager_decorator.inner'
       - '@logger.channel.dependency_injection_exercise'
       - '@current_route_match'
+  # Complete override of MailManager service would be optimal option.
+  # Had issues with implementation, so this approach is used as a temp alternative.
   dependency_injection_exercise.mail_manager_decorator:
     class: Drupal\dependency_injection_exercise\RedirectMailManagerDecorator
     decorates: plugin.manager.mail
-    decoration_priority: 10
+    decoration_priority: 100
     arguments:
       - '@dependency_injection_exercise.mail_manager_decorator.inner'
       - '@container.namespaces'

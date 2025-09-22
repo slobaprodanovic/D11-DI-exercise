@@ -813,16 +813,3 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
 }
-$databases['default']['default'] = array (
-  'database' => 'default',
-  'username' => 'root',
-  'password' => 'root',
-  'prefix' => '',
-  'host' => 'db',
-  'port' => '3306',
-  'isolation_level' => 'READ COMMITTED',
-  'driver' => 'mysql',
-  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
-  'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
-);
-$settings['config_sync_directory'] = 'sites/default/files/config_mL18NPY3OGcb9d93AWT-p4esiJWqxU40P-3t6HvKOpSnbJii8xVo_6pIJyfgOQDSXOXIy69QJQ/sync';

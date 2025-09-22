@@ -1,0 +1,20 @@
+uuid: 557b9a88-de03-4594-91f8-a978de9b8121
+langcode: en
+status: true
+dependencies:
+  module:
+    - dependency_injection_exercise
+  theme:
+    - olivero
+id: olivero_restoutputblock
+theme: olivero
+region: sidebar
+weight: 0
+provider: null
+plugin: rest_output_block
+settings:
+  id: rest_output_block
+  label: 'Rest output block'
+  label_display: visible
+  provider: dependency_injection_exercise
+visibility: {  }

@@ -1,5 +1,7 @@
-name: Dependecy injection exercise
+name: Dependency injection exercise
 type: module
 description: 'Contains exercises for Dependency Injection.'
 package: Dropsolid
 core_version_requirement: ^9 || ^10 || ^11
+dependencies:
+  - mailsystem:mailsystem

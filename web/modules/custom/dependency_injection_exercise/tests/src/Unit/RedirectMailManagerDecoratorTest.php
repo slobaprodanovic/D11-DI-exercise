@@ -12,13 +12,14 @@ use Drupal\Tests\UnitTestCase;
 use Drupal\dependency_injection_exercise\RedirectMailManagerDecorator;
 use Drupal\Core\Mail\MailManagerInterface;
 use ArrayIterator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests for the RedirectMailManagerDecorator class.
- *
- * @covers \Drupal\dependency_injection_exercise\RedirectMailManagerDecorator
- * @group dependency_injection_exercise
  */
+#[CoversClass(RedirectMailManagerDecorator::class)]
+#[Group('dependency_injection_exercise')]
 class RedirectMailManagerDecoratorTest extends UnitTestCase {
 
   /**
@@ -30,13 +31,13 @@ class RedirectMailManagerDecoratorTest extends UnitTestCase {
     $mockInner->expects($this->once())
       ->method('mail')
       ->with(
-        $this->anything(),
-        $this->anything(),
+        'my_module',
+        'key',
         'test@example.com',
-        $this->anything(),
-        $this->anything(),
-        $this->anything(),
-        $this->anything()
+        'en',
+        ['subject' => 'Hello'],
+        NULL,
+        TRUE
       )
       ->willReturn(1);
 
